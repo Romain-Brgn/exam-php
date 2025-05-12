@@ -10,7 +10,7 @@
     <h1>Test technique PHP</h1>
     
        <div id="container"> 
-        <fieldset id="fieldContainer"><legend>Question n° y sur x</legend>
+        <fieldset id="fieldContainer"><legend> Question y/x </legend>
             <h2>Comment déclare t'on une variable en PHP ?</h2>
             <article class="listAnswer">
                 <input type="radio" id="azzaer" name="question1" value="true">
@@ -31,8 +31,9 @@
         </fieldset>
         </div>
         <div id="scoreContainer">
-            <button id="validationButton">Validez</button>
+            <button method="post" id="validationButton">Validez</button>
         </div>
+        
         
     
     
