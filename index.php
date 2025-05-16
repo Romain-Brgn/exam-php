@@ -1,3 +1,77 @@
+<?php
+
+session_start(); //on initialise la session
+
+$questionIndex = $_SESSION["questionIndex"] ?? 0; // l'index de la question dans le tableau questionTable, qu'on incrémente a chaque submit
+$score = $_SESSION["score"] ?? 0; // le score qu'on incrémente sous conditions de bonne réponse
+$questionTable = [ //le tableau des questions avec leurs réponse et la bonne réponse
+    // question 1
+    ["question"=>"Comment déclare t'on une variable en PHP ?",
+    "reponses"=>
+            [
+            // reponse 1
+            '$maVariable =',
+            // reponse 2
+            '$_maVariable =',
+            // reponse 3
+            'let maVariable =',
+            // reponse 4
+            '@maVariable ='
+            ],
+            'goodAnswer'=>  '$maVariable ='           
+            ],
+            // question 2
+    ["question"=>"PHP est un language :",
+    "reponses"=>
+            [
+            // reponse 1
+            "Front-end",
+            // reponse 2
+            "Algorithmique",
+            // reponse 3
+            "Back-end",
+            // reponse 4
+            "Autre"
+            ],
+            'goodAnswer'=>  'Back-end'
+            ],
+            // question 3
+        ["question"=>"Combien de % du web est codé en PHP ?",
+    "reponses"=>
+            [
+            // reponse 1
+            "20%",
+            // reponse 2
+            "50%",
+            // reponse 3
+            "80%",
+            // reponse 4
+            "100%"
+            ],
+            'goodAnswer'=>  '80%'
+            
+            ]
+            ];
+
+if(isset($_POST["question"])){
+    requestAnswer($questionTable,$questionIndex,$score);
+    $questionIndex++;
+    $_SESSION["questionIndex"] =$questionIndex ;
+
+};
+if (isset($_GET["resetQuizz"])){
+
+    session_destroy();
+    session_start();
+    echo 'toto';
+};
+
+?>
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -10,32 +84,60 @@
     <h1>Test technique PHP</h1>
     
        <div id="container"> 
-        <fieldset id="fieldContainer"><legend> Question y/x </legend>
-            <h2>Comment déclare t'on une variable en PHP ?</h2>
-            <article class="listAnswer">
-                <input type="radio" id="azzaer" name="question1" value="true">
-                <label  for="azzaer">"$maVariable = "</label><br>
-            </article>
-            <article class="listAnswer">
-                <input type="radio" id="azerz" name="question1" value="false">
-                <label for="azerz">"$_maVariable = "</label><br>
-                </article>
-            <article class="listAnswer">
-                <input type="radio" id="zerret" name="question1" value="false">
-                <label for="zerret">"let maVariable = "</label><br>
-            </article>  
-            <article class="listAnswer">
-                <input type="radio" id="zea" name="question1" value="false">
-                <label  for="zea">"@maVariable = "</label><br>
-            </article>
-        </fieldset>
-        </div>
-        <div id="scoreContainer">
-            <button method="post" id="validationButton">Validez</button>
-        </div>
         
+<?php
+if($questionIndex == count($questionTable)){
+        displayScore($score,$questionTable);
+        
+    }else{
+    $question = $questionTable[$questionIndex]["question"];
+    echo '<fieldset id="fieldContainer"><legend> Question '.($questionIndex+1).'/ '.count ($questionTable).'</legend>';
+
+    ?>
+
+            <form action="" method="post"><h2><?=$question?></h2>
+<?php foreach($questionTable[$questionIndex]['reponses'] as $key => $reponse)
+{
+
+    echo '<article class="listAnswer">
+        <input type="radio" id="'.$key.'" name="question" value="'.$reponse.'">
+        <label  for="'.$key.'">'.$reponse.'</label><br>
+        </article>';
+    
+    
+    
+};
+        ?>
+        <div id="scoreContainer">
+            <button  class="validationButton">Validez</button>
+        </div>
+        </form></fieldset><?php
+    }
+?>
+
+        </div>
+       
+
+
+
+
         
     
     
 </body>
 </html> 
+<?php
+function displayScore($score,$questionTable){
+echo '<h2>Votre score est de '.$score.'/ '.count($questionTable).'</h2><br>
+<a class="validationButton" href="/?resetQuizz=ok">Refaire le test</a>';
+};
+
+
+
+function requestAnswer($table,$index,$score){
+    if($_POST["question"] === $table[$index]['goodAnswer']){
+        $_SESSION["score"] = $score+1;
+    };
+    
+
+};
